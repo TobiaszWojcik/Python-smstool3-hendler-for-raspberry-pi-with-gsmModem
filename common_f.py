@@ -1,6 +1,6 @@
 import datetime
 import random
-from varibles import admin_number, text
+from varibles import admin_number, text, test
 
 
 def add_sms(sms_text, sms_number = admin_number, sms_id = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'), sms_flash = "no"):
@@ -34,3 +34,7 @@ def log_sms(e):
             file.write(e)
     except Exception as er:
         log_error(er)
+
+def print_test(string):
+    if test:
+        print (string)

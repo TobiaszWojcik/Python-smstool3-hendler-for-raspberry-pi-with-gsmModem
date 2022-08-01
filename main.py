@@ -4,7 +4,7 @@ from os import system
 import atexit
 from varibles import *
 from check_modem import check_modem_status, check_incoming, update_date
-from common_f import add_sms, log_error
+from common_f import add_sms, log_error, print_test
 
 @atexit.register
 def goodbye():
@@ -22,8 +22,11 @@ def is_integer(char):
 def mark_as_delivered(id):
     mycursor.execute(sql_update.format(id=id[0], status=id[1], data_w=update_date()))
 
-# time.sleep(30)
-# system("sudo /etc/init.d/smstools restart")
+
+if not test:
+    time.sleep(10)
+    system("sudo /etc/init.d/smstools restart")
+
 while True:
     check_modem_status()
     try:

@@ -1,6 +1,6 @@
 import os, datetime
 from varibles import *
-from common_f import add_sms, log_error
+from common_f import add_sms, log_error, print_test
 
 def update_date():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -17,13 +17,11 @@ def check_modem_status():
 
 
 def check_incoming():
-    # print("chceck uruchomiony")
-
     sms_list = os.listdir(incoming_path)
     sms_sended_list = os.listdir(send_path)
-    # print(sms_list)
     if len(sms_list) > 0:
         incoming_sms_counter = 0
+        print_test(sms_list)
         for sms in sms_list:
             incoming_sms_counter += 1
             sms_from = ''
@@ -31,7 +29,7 @@ def check_incoming():
             sms_id = None
             sms_status = None
             with open(incoming_path+"/"+sms, 'r') as incoming_sms:
-                # print("sprawdzanie plików")
+                print_test("sprawdzanie plików")
                 for line in incoming_sms:
                     line = (line.strip()).split(': ')
                     if len(line) == 1:
@@ -42,16 +40,26 @@ def check_incoming():
                         sms_id = line[1]
                     elif line[0] == "Status":
                         sms_status = line[1]
-            # print(sms_text, sms_from, sms_status)
+            # print_test((sms_text, sms_from, sms_status))
+            # print_test(sms_from.find(admin_number))
             if not sms_status:
-                # print("ponowne wysyłanie do admina")
-                if add_sms(sms_text+" From: "+sms_from, admin_number, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')+str(incoming_sms_counter)):
-                    # print("przenoszenie pliku")
-                    os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
+                # print_test("To wiadomość przychodząca")
+                # print_test(sms_from.find(admin_number))
+                if not sms_from.find(admin_number):
+                    print_test("To sms od admina")
+                else:
+                    if sms_text.upper().strip() in miejsca.keys():
+                        print_test("żądanie miejsca")
+                        if(add_sms("Przystań {}: {}".format(sms_text, miejsca[sms_text.upper()]), sms_from,
+                                datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f') + str(incoming_sms_counter))):
+                            os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
+                    elif add_sms(sms_text+" From: "+sms_from, admin_number, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')+str(incoming_sms_counter)):
+                        os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
             else:
-                # print("to są statusy")
+                print_test("to są statusy")
                 sms_send_id = None
                 for sms_send in sms_sended_list:
+                    # print_test(sms_sended_list)
                     sms_send_id = None
                     with open(send_path + "/" + sms_send, 'r') as sended_sms:
 
@@ -59,6 +67,7 @@ def check_incoming():
                             line = (line.strip()).split(': ')
                             if line[0] == "Message_id":
                                 sms_send_id = line[1]
+                                print_test(sms_send_id)
                                 break
                     # print(sms_id, sms_send_id)
                     if sms_id == sms_send_id:
@@ -75,7 +84,7 @@ def check_incoming():
                             else:
                                 return [temp_sms_id, 3]
                         return None
-            os.popen("sudo rm {from_sms}/{name}".format(from_sms=incoming_path, name=sms))
+                os.popen("sudo rm {from_sms}/{name}".format(from_sms=incoming_path, name=sms))
 
     else:
         return None
