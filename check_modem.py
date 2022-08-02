@@ -46,10 +46,14 @@ def check_incoming():
                 # print_test("To wiadomość przychodząca")
                 # print_test(sms_from.find(admin_number))
                 if not sms_from.find(admin_number):
+
+                    os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms,
+                                                                                  outgoing=checked_path))
                     if not sms_text.upper().find("RESTART"):
                         os.system("sudo shutdown now -r")
                         break
                     elif not sms_text.upper().find("TEST"):
+                        add_sms(os.system("vcgencmd measure_temp"))
                         break
 
                 if sms_text.upper().strip() in miejsca.keys():
