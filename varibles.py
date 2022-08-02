@@ -11,12 +11,13 @@ send_path = spool_path+"sent"
 checked_path = spool_path+"checked_sms"
 admin_number = "48517893723"
 sms_log = "/home"
+test = False
 if len(sys.argv) > 1:
     if sys.argv[1] == "t":
         print("Test mode")
         test = True
-    else:
-        test = False
+
+
 
 text = """To: {number}
 Flash: {flash}

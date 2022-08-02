@@ -42,7 +42,8 @@ while True:
         mycursor = mydb.cursor()
         print_test("Serwer uruchomiony")
         log_error("Serwer uruchomiony")
-        add_sms("Serwer uruchomiony")
+        if not test:
+            add_sms("Serwer uruchomiony")
         while True:
             mycursor.execute(sql_check)
             myresult = mycursor.fetchall()
