@@ -1,4 +1,4 @@
-i = 0
-while i < 1000000000:
-    print(i)
-    i += 1
+import sys
+if len(sys.argv) > 1:
+    if sys.argv[1] == "t":
+        print ("Test mode")

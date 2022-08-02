@@ -46,15 +46,16 @@ def check_incoming():
                 # print_test("To wiadomość przychodząca")
                 # print_test(sms_from.find(admin_number))
                 if not sms_from.find(admin_number):
-                    print_test("To sms od admina")
-                else:
-                    if sms_text.upper().strip() in miejsca.keys():
-                        print_test("żądanie miejsca")
-                        if(add_sms("Przystań {}: {}".format(sms_text, miejsca[sms_text.upper()]), sms_from,
-                                datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f') + str(incoming_sms_counter))):
-                            os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
-                    elif add_sms(sms_text+" From: "+sms_from, admin_number, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')+str(incoming_sms_counter)):
+                    if not sms_text.upper().find("RESTART"):
+                        os.system("sudo shutdown now -r")
+
+                if sms_text.upper().strip() in miejsca.keys():
+                    print_test("żądanie miejsca")
+                    if(add_sms("Przystań {}: {}".format(sms_text, miejsca[sms_text.upper()]), sms_from,
+                            datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f') + str(incoming_sms_counter))):
                         os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
+                elif add_sms(sms_text+" From: "+sms_from, admin_number, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')+str(incoming_sms_counter)):
+                    os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
             else:
                 print_test("to są statusy")
                 sms_send_id = None

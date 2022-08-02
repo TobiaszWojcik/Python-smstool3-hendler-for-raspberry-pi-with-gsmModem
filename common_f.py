@@ -17,6 +17,7 @@ def add_sms(sms_text, sms_number = admin_number, sms_id = datetime.datetime.now(
 
 
 def log_error(e):
+    print_test(e)
     try:
         with open('/home/pi/Logs/error.log', 'a+') as file:
             file.write("{} - {}\n".format(datetime.datetime.now().strftime('%Y.%m.%d-%H:%M:%S'), e))
@@ -37,4 +38,4 @@ def log_sms(e):
 
 def print_test(string):
     if test:
-        print (string)
+        print(string)

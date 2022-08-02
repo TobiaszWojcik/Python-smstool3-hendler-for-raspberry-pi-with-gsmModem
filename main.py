@@ -8,14 +8,14 @@ from common_f import add_sms, log_error, print_test
 
 @atexit.register
 def goodbye():
-    system("python /home/pi/PycharmProjects/pythonProject/main.py")
+    if not test:
+        system("python /home/pi/PycharmProjects/pythonProject/main.py")
 
 def is_integer(char):
     try:
         int(char)
         return True
     except ValueError as e:
-        log_error(e)
         return False
 
 
@@ -40,9 +40,9 @@ while True:
 
         mydb.autocommit = True
         mycursor = mydb.cursor()
-        # print("Serwer uruchomiony")
+        print_test("Serwer uruchomiony")
         log_error("Serwer uruchomiony")
-        # add_sms("Serwer uruchomiony")
+        add_sms("Serwer uruchomiony")
         while True:
             mycursor.execute(sql_check)
             myresult = mycursor.fetchall()
