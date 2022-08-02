@@ -48,6 +48,9 @@ def check_incoming():
                 if not sms_from.find(admin_number):
                     if not sms_text.upper().find("RESTART"):
                         os.system("sudo shutdown now -r")
+                        break
+                    elif not sms_text.upper().find("TEST"):
+                        break
 
                 if sms_text.upper().strip() in miejsca.keys():
                     print_test("żądanie miejsca")
