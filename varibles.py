@@ -34,5 +34,7 @@ connection_counter = 0
 miejsca = {"LISZNA":"goo.gl/maps/Ga17yTemvAUYanvU6",
            "MIĘDZYBRODZIE": "goo.gl/maps/oc1Zrd77McQ2",
            "MRZYGŁÓD": "goo.gl/maps/MbxQtFTya7G2",
+           "MIEDZYBRODZIE": "goo.gl/maps/oc1Zrd77McQ2",
+           "MRZYGLOD": "goo.gl/maps/MbxQtFTya7G2",
            "SANOK":"goo.gl/maps/TNxBkUxxebxtRUrJ8"
            }

@@ -53,7 +53,7 @@ def check_incoming():
                         os.system("sudo shutdown now -r")
                         break
                     elif not sms_text.upper().find("TEST"):
-                        add_sms(os.popen("vcgencmd measure_temp").read)
+                        add_sms(os.popen("vcgencmd measure_temp").read())
                         break
 
                 if sms_text.upper().strip() in miejsca.keys():
