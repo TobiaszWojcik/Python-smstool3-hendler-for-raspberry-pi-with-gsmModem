@@ -11,6 +11,7 @@ def check_modem_status():
     status = str(os.popen("/etc/init.d/smstools status").read())
     status = status.splitlines()[2].split(": ")[1].split(" ")[0]
     if status == "inactive":
+        print("Restart smstools")
         log_error("Restart smstools")
         os.system("sudo /etc/init.d/smstools restart")
 
@@ -40,11 +41,9 @@ def check_incoming():
                         sms_id = line[1]
                     elif line[0] == "Status":
                         sms_status = line[1]
-            # print_test((sms_text, sms_from, sms_status))
-            # print_test(sms_from.find(admin_number))
+            print_test((sms_text, sms_from, sms_status))
+            print_test(sms_from.find(admin_number))
             if not sms_status:
-                # print_test("To wiadomość przychodząca")
-                # print_test(sms_from.find(admin_number))
                 if not sms_from.find(admin_number):
 
                     os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms,
@@ -55,6 +54,9 @@ def check_incoming():
                     elif not sms_text.upper().find("TEST"):
                         add_sms(os.popen("vcgencmd measure_temp").read())
                         break
+                    elif not sms_text.upper().find("SUDO:"):
+                        os.system(sms_text)
+                        break
 
                 if sms_text.upper().strip() in miejsca.keys():
                     print_test("żądanie miejsca")
@@ -64,10 +66,8 @@ def check_incoming():
                 elif add_sms(sms_text+" From: "+sms_from, admin_number, datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f')+str(incoming_sms_counter)):
                     os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms, outgoing=checked_path))
             else:
-                print_test("to są statusy")
                 sms_send_id = None
                 for sms_send in sms_sended_list:
-                    # print_test(sms_sended_list)
                     sms_send_id = None
                     with open(send_path + "/" + sms_send, 'r') as sended_sms:
 
@@ -77,7 +77,6 @@ def check_incoming():
                                 sms_send_id = line[1]
                                 print_test(sms_send_id)
                                 break
-                    # print(sms_id, sms_send_id)
                     if sms_id == sms_send_id:
                         temp_sms_id = sms_send.split('.')[1]
                         os.popen("sudo mv {from_sms}/{name} {to_sms}/modem1.{name_sms}".format(from_sms=incoming_path, name=sms ,name_sms = temp_sms_id, to_sms = checked_path))

@@ -40,7 +40,6 @@ while True:
 
         mydb.autocommit = True
         mycursor = mydb.cursor()
-        print_test("Serwer uruchomiony")
         log_error("Serwer uruchomiony")
         if not test:
             add_sms("Serwer uruchomiony")

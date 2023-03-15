@@ -9,7 +9,7 @@ def add_sms(sms_text, sms_number = admin_number, sms_id = datetime.datetime.now(
         with open("/var/spool/sms/outgoing/out.{}".format(sms_id), 'w', encoding='utf-8') as sms:
             sms.write(text.format(number=sms_number, strings=sms_text, flash=sms_flash))
             log_sms("{} - {} - {}\n".format(datetime.datetime.now().strftime('%Y.%m.%d-%H:%M:%S'), sms_number, sms_text))
-            # print("{} - {} - {}".format(sms_id, sms_number, sms_text))
+            print("{} - {} - {}".format(sms_id, sms_number, sms_text))
         return True
     except Exception as exception_send_error:
         log_error(exception_send_error)
