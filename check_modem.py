@@ -54,8 +54,8 @@ def check_incoming():
                     elif not sms_text.upper().find("TEST"):
                         add_sms(os.popen("vcgencmd measure_temp").read())
                         break
-                    elif not sms_text.upper().find("SUDO:"):
-                        os.system(sms_text)
+                    elif not sms_text.upper().find("SUDO "):
+                        print(os.popen(sms_text).read())
                         break
 
                 if sms_text.upper().strip() in miejsca.keys():
