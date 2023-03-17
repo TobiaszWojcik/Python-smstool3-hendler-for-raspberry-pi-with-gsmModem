@@ -1,5 +1,7 @@
 import os
 import datetime
+import time
+
 from varibles import *
 from common_f import add_sms, log_error, print_test, send_email
 
@@ -10,13 +12,29 @@ def update_date():
 
 def check_modem_status():
     status = str(os.popen("/etc/init.d/smstools status").read())
-    status = status.splitlines()[2].split(": ")[1].split(" ")[0]
-    print(status)
-    if status == "inactive":
+    status = status.splitlines()
+    status_active = status[2].split(": ")[1].strip().split(" ")[0]
+    print("Status: "+status_active)
+
+    if status_active == "inactive":
         send_email("Raspberry PI", "Restart Modemu")
         print("Restart smstools")
         log_error("Restart smstools")
         os.system("sudo /etc/init.d/smstools restart")
+        time.sleep(10)
+        check_modem_status()
+    else:
+        for record in status:
+            modem_active = record.split(": ")[0].strip()
+            if modem_active == "CGroup":
+                log_error("Modem GSM działa")
+                return
+        log_error("Restart Maliny")
+        send_email("RaspberryPi", "Raspberry ma problemy z połączeniem modemu GSM, Restart Raspberry Pi")
+        for i in range(0, 10):
+            print("Restart serwera za {}s\n".format(10-i))
+            time.sleep(1)
+        os.system("sudo shutdown now -r")
 
 
 def check_incoming():
@@ -70,6 +88,21 @@ def check_incoming():
                     elif not sms_text.upper().find("SUDO_SMS "):
                         log_error("send feedback by sms {} to admin".format(sms_text))
                         sms_message = os.popen(sms_text[9:]).read()
+                        add_sms(sms_message)
+                        break
+                    elif not sms_text.upper().find("STATUS"):
+                        log_error("send status by email to admin")
+                        status = str(os.popen("/etc/init.d/smstools status").read())
+                        send_email("Raspberry Modem CallBack", status)
+                        break
+                    elif not sms_text.upper().find("HELP"):
+                        sms_message = '''TEST
+                        RESTART
+                        SUDO_DO 
+                        SUDO_EMAIL
+                        SUDO_SMS
+                        STATUS (email)
+                        '''
                         add_sms(sms_message)
                         break
                 if sms_text.upper().strip() in miejsca.keys():
