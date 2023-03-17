@@ -1,21 +1,22 @@
-import os, datetime
+import os
+import datetime
 from varibles import *
-from common_f import add_sms, log_error, print_test,send_email
+from common_f import add_sms, log_error, print_test, send_email
+
 
 def update_date():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-
 def check_modem_status():
     status = str(os.popen("/etc/init.d/smstools status").read())
-    print_test(status)
     status = status.splitlines()[2].split(": ")[1].split(" ")[0]
+    print(status)
     if status == "inactive":
+        send_email("Raspberry PI", "Restart Modemu")
         print("Restart smstools")
         log_error("Restart smstools")
         os.system("sudo /etc/init.d/smstools restart")
-
 
 
 def check_incoming():
@@ -49,9 +50,7 @@ def check_incoming():
 
                     os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms,
                                                                                   outgoing=checked_path))
-                    print(sms_text)
-                    print(sms_text.upper().find("SUDO"))
-                    print(sms_text.upper().find("TEST"))
+                    print("\n\n\n\n{}\n\n\n\n".format(sms_text))
                     if not sms_text.upper().find("RESTART"):
                         os.system("sudo shutdown now -r")
                         break
@@ -61,15 +60,15 @@ def check_incoming():
                     elif not sms_text.upper().find("SUDO_DO:"):
                         print_message = os.popen(sms_text[8:]).read()
                         print(sms_text[8:])
-                        print_test("made without feedback {} on Raspberry".format(sms_text))
+                        log_error("made without feedback {} on Raspberry".format(sms_text))
                         break
                     elif not sms_text.upper().find("SUDO_EMAIL:"):
-                        print_test("emailed feedback {} to admin".format(sms_text))
+                        log_error("emailed feedback {} to admin".format(sms_text))
                         email_message = os.popen(sms_text[11:]).read()
                         send_email("Raspberry Modem CallBack", email_message)
                         break
                     elif not sms_text.upper().find("SUDO_SMS:"):
-                        print_test("send feedback by sms {} to admin".format(sms_text))
+                        log_error("send feedback by sms {} to admin".format(sms_text))
                         sms_message = os.popen(sms_text[9:]).read()
                         add_sms(sms_message)
                         break

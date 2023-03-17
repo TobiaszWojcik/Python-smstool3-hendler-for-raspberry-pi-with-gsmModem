@@ -4,13 +4,17 @@ from os import system
 import atexit
 from varibles import *
 from check_modem import check_modem_status, check_incoming, update_date
-from common_f import add_sms, log_error, print_test
+from common_f import add_sms, log_error, print_test, send_email
 from constans import MYSQL_DATA
+
 
 @atexit.register
 def goodbye():
     if not test:
+        log_error("Restart Programu")
+        send_email("RaspberryPi", "Restart Programu")
         system("python /home/pi/PycharmProjects/pythonProject/main.py")
+
 
 def is_integer(char):
     try:
@@ -32,10 +36,10 @@ while True:
     check_modem_status()
     try:
         mydb = mysql.connector.connect(
-            host=MYSQL_DATA.HOST,
-            user=MYSQL_DATA.USER,
-            password=MYSQL_DATA.PASSWORD,
-            database=MYSQL_DATA.DATABASE,
+            host=MYSQL_DATA["HOST"],
+            user=MYSQL_DATA["USER"],
+            password=MYSQL_DATA["PASSWORD"],
+            database=MYSQL_DATA["DATABASE"],
             connection_timeout=10,
         )
 
@@ -76,7 +80,7 @@ while True:
             time.sleep(1)
     except Exception as exception:
         log_error("problem z serwerem"+str(exception))
+        send_email("RaspberryPi", "problem z bazą danych, restart za 60s\nError:"+str(exception))
         add_sms(exception)
-
         time.sleep(60)
 

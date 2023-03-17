@@ -6,12 +6,12 @@ from varibles import admin_number, text, test
 
 
 def send_email(subject, message, to=None):
-    sender = GMAIL.USER
+    sender = GMAIL["USER"]
     if to is None:
-        recipients = ADMIN.EMAIL
+        recipients = ADMIN["EMAIL"]
     else:
         recipients = to
-    password = GMAIL.PASSWORD
+    password = GMAIL["PASSWORD"]
     msg = MIMEText(message)
     msg['Subject'] = subject
     msg['From'] = sender
@@ -20,11 +20,6 @@ def send_email(subject, message, to=None):
     smtp_server.login(sender, password)
     smtp_server.sendmail(sender, recipients, msg.as_string())
     smtp_server.quit()
-
-
-
-
-
 
 
 def add_sms(sms_text, sms_number = admin_number, sms_id = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'), sms_flash = "no"):
@@ -59,6 +54,7 @@ def log_sms(e):
             file.write(e)
     except Exception as er:
         log_error(er)
+
 
 def print_test(string):
     if test:
