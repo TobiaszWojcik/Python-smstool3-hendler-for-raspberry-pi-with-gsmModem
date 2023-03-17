@@ -9,7 +9,7 @@ incoming_path = spool_path+"incoming"
 outgoing_path = spool_path+"outgoing"
 send_path = spool_path+"sent"
 checked_path = spool_path+"checked_sms"
-admin_number = ADMIN.NUMBER
+admin_number = ADMIN["NUMBER"]
 sms_log = "/home"
 test = True
 if len(sys.argv) > 1:
