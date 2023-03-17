@@ -9,6 +9,7 @@ def update_date():
 
 def check_modem_status():
     status = str(os.popen("/etc/init.d/smstools status").read())
+    print_test(status)
     status = status.splitlines()[2].split(": ")[1].split(" ")[0]
     if status == "inactive":
         print("Restart smstools")
@@ -59,17 +60,19 @@ def check_incoming():
                         break
                     elif not sms_text.upper().find("SUDO_DO:"):
                         print_message = os.popen(sms_text[8:]).read()
+                        print(sms_text[8:])
                         print_test("made without feedback {} on Raspberry".format(sms_text))
                         break
                     elif not sms_text.upper().find("SUDO_EMAIL:"):
                         print_test("emailed feedback {} to admin".format(sms_text))
                         email_message = os.popen(sms_text[11:]).read()
                         send_email("Raspberry Modem CallBack", email_message)
+                        break
                     elif not sms_text.upper().find("SUDO_SMS:"):
                         print_test("send feedback by sms {} to admin".format(sms_text))
                         sms_message = os.popen(sms_text[9:]).read()
                         add_sms(sms_message)
-
+                        break
                 if sms_text.upper().strip() in miejsca.keys():
                     print_test("żądanie miejsca")
                     if(add_sms("Przystań {}: {}".format(sms_text, miejsca[sms_text.upper()]), sms_from,
