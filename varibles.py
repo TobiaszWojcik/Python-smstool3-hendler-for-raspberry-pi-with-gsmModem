@@ -1,5 +1,5 @@
 import sys
-
+from constans import ADMIN
 if len(sys.argv) > 1:
     if sys.argv[1] == "t":
         print("Test mode")
@@ -9,7 +9,7 @@ incoming_path = spool_path+"incoming"
 outgoing_path = spool_path+"outgoing"
 send_path = spool_path+"sent"
 checked_path = spool_path+"checked_sms"
-admin_number = "48517893723"
+admin_number = ADMIN.NUMBER
 sms_log = "/home"
 test = True
 if len(sys.argv) > 1:

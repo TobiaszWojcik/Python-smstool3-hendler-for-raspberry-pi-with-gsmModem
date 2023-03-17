@@ -1,6 +1,30 @@
 import datetime
-import random
+import smtplib
+from email.mime.text import MIMEText
+from constans import GMAIL, ADMIN
 from varibles import admin_number, text, test
+
+
+def send_email(subject, message, to=None):
+    sender = GMAIL.USER
+    if to is None:
+        recipients = ADMIN.EMAIL
+    else:
+        recipients = to
+    password = GMAIL.PASSWORD
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = ', '.join(recipients)
+    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    smtp_server.login(sender, password)
+    smtp_server.sendmail(sender, recipients, msg.as_string())
+    smtp_server.quit()
+
+
+
+
+
 
 
 def add_sms(sms_text, sms_number = admin_number, sms_id = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S_%f'), sms_flash = "no"):

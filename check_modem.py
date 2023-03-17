@@ -1,6 +1,6 @@
 import os, datetime
 from varibles import *
-from common_f import add_sms, log_error, print_test
+from common_f import add_sms, log_error, print_test,send_email
 
 def update_date():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -48,15 +48,27 @@ def check_incoming():
 
                     os.popen("sudo mv {incoming}/{name} {outgoing}/{name}".format(incoming=incoming_path, name=sms,
                                                                                   outgoing=checked_path))
+                    print(sms_text)
+                    print(sms_text.upper().find("SUDO"))
+                    print(sms_text.upper().find("TEST"))
                     if not sms_text.upper().find("RESTART"):
                         os.system("sudo shutdown now -r")
                         break
                     elif not sms_text.upper().find("TEST"):
                         add_sms(os.popen("vcgencmd measure_temp").read())
                         break
-                    elif not sms_text.upper().find("SUDO "):
-                        print(os.popen(sms_text).read())
+                    elif not sms_text.upper().find("SUDO_DO:"):
+                        print_message = os.popen(sms_text[8:]).read()
+                        print_test("made without feedback {} on Raspberry".format(sms_text))
                         break
+                    elif not sms_text.upper().find("SUDO_EMAIL:"):
+                        print_test("emailed feedback {} to admin".format(sms_text))
+                        email_message = os.popen(sms_text[11:]).read()
+                        send_email("Raspberry Modem CallBack", email_message)
+                    elif not sms_text.upper().find("SUDO_SMS:"):
+                        print_test("send feedback by sms {} to admin".format(sms_text))
+                        sms_message = os.popen(sms_text[9:]).read()
+                        add_sms(sms_message)
 
                 if sms_text.upper().strip() in miejsca.keys():
                     print_test("żądanie miejsca")

@@ -5,6 +5,7 @@ import atexit
 from varibles import *
 from check_modem import check_modem_status, check_incoming, update_date
 from common_f import add_sms, log_error, print_test
+from constans import MYSQL_DATA
 
 @atexit.register
 def goodbye():
@@ -31,10 +32,10 @@ while True:
     check_modem_status()
     try:
         mydb = mysql.connector.connect(
-            host="bieszczadyaktywnie.atthost24.pl",
-            user="13132_wp_1",
-            password="BgYU0L9O",
-            database="13132_wp_1",
+            host=MYSQL_DATA.HOST,
+            user=MYSQL_DATA.USER,
+            password=MYSQL_DATA.PASSWORD,
+            database=MYSQL_DATA.DATABASE,
             connection_timeout=10,
         )
 
