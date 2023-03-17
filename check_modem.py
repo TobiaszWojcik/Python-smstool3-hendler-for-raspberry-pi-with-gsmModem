@@ -57,17 +57,17 @@ def check_incoming():
                     elif not sms_text.upper().find("TEST"):
                         add_sms(os.popen("vcgencmd measure_temp").read())
                         break
-                    elif not sms_text.upper().find("SUDO_DO:"):
+                    elif not sms_text.upper().find("SUDO_DO "):
                         print_message = os.popen(sms_text[8:]).read()
                         print(sms_text[8:])
                         log_error("made without feedback {} on Raspberry".format(sms_text))
                         break
-                    elif not sms_text.upper().find("SUDO_EMAIL:"):
+                    elif not sms_text.upper().find("SUDO_EMAIL "):
                         log_error("emailed feedback {} to admin".format(sms_text))
                         email_message = os.popen(sms_text[11:]).read()
                         send_email("Raspberry Modem CallBack", email_message)
                         break
-                    elif not sms_text.upper().find("SUDO_SMS:"):
+                    elif not sms_text.upper().find("SUDO_SMS "):
                         log_error("send feedback by sms {} to admin".format(sms_text))
                         sms_message = os.popen(sms_text[9:]).read()
                         add_sms(sms_message)
